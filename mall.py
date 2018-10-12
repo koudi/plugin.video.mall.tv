@@ -2,6 +2,7 @@
 
 from bs4 import BeautifulSoup
 import requests
+import re
 
 class MallApi():
 
@@ -122,4 +123,13 @@ class MallApi():
 
     def get_video_url(self, link):
         page = self.get_page(link)
-        return page.find('source')['src'] + '.m3u8'
+        main_link = page.find('source')['src'] + '.m3u8'
+
+        index_list = requests.get(main_link).text
+
+        qualities = re.findall(r'(\d+)/index.m3u8', index_list, flags=re.MULTILINE)
+        qualities = reversed(sorted(map(int, qualities)))
+        max_quality = int(self.plugin.get_setting('max_quality'))
+        selected = filter(lambda x: x <= max_quality, qualities)[0]
+
+        return '%s/%s/index.m3u8' % (main_link.replace('/index.m3u8', ''), selected)
