@@ -123,7 +123,13 @@ class MallApi():
 
     def get_video_url(self, link):
         page = self.get_page(link)
-        main_link = page.find('source')['src'] + '.m3u8'
+
+        source = page.find('source')
+
+        if not source:
+            main_link = page.find('meta', {'itemprop': 'image'})['content'].replace('standart.jpg', 'index.m3u8')
+        else:
+            main_link = source['src'] + '.m3u8'
 
         index_list = requests.get(main_link).text
 
