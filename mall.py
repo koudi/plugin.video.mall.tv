@@ -79,7 +79,17 @@ class MallApi():
 
     def get_show_videos(self, link):
         page = self.get_page(link)
-        return self.extract_videos(page)
+        return self.extract_videos(page, search_section=True)
+
+    def get_recent(self, page):
+        result = []
+        page = self.get_page('/sekce/nejnovejsi?page=%s' % page)
+        videos = self.extract_videos(page, search_section=(page == 0))
+
+        for r in videos:
+            r['label'] = '[LIGHT]%s[/LIGHT] | %s' % (r['show_name'], r['label'])
+
+        return videos
 
     def extract_shows(self, page):
         result = []
@@ -93,9 +103,13 @@ class MallApi():
 
         return result
 
-    def extract_videos(self, page):
+    def extract_videos(self, page, search_section=True):
         result = []
-        grid = page.find('section', {'class': ['video-grid', 'isVideo']})
+
+        if search_section:
+            grid = page.find('section', {'class': ['video-grid', 'isVideo']})
+        else:
+            grid = page
 
         for card in grid.find_all('div', {'class': 'video-card'}):
             link = card.select('.video-card__details a.video-card__details-link')[0]
@@ -107,7 +121,8 @@ class MallApi():
                 'info': {
                     'duration': self.get_duration(card.find('span', {'class': 'badge__wrapper-video-duration'}).text)
                 },
-                'is_playable': True
+                'is_playable': True,
+                'show_name': card.find('a', {'class': ['video-card__info', 'video-card__info-channel']}).text,
             })
 
         return result
