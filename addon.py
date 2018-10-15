@@ -26,14 +26,15 @@ def video(link):
     url = api.get_video_url(link)
     plugin.set_resolved_url(url)
 
-@plugin.route('/recent/<page>')
-def recent(page='0'):
+@plugin.route('/popular/<page>', name='popular', options={'video_type': 'popular'})
+@plugin.route('/recent/<page>', name='recent',  options={'video_type': 'recent'})
+def paged_videos(video_type, page='0'):
     page = int(page)
-    items = api.get_recent(page)
+    items = api.get_paged_videos(page, video_type)
 
     items.append({
         'label': plugin.get_string(30011),
-        'path': plugin.url_for(recent, page=str(page + 1))
+        'path': plugin.url_for(video_type, page=str(page + 1))
     })
 
     return items
@@ -52,7 +53,11 @@ def index():
         'label': plugin.get_string(30010),
         'path': plugin.url_for('recent', page='0')
     }
-    return [show, category, recent]
+    popular = {
+        'label': plugin.get_string(30013),
+        'path': plugin.url_for('popular', page='0')
+    }
+    return [show, category, recent, popular]
 
 if __name__ == '__main__':
     plugin.run()

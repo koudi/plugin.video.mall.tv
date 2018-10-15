@@ -81,9 +81,14 @@ class MallApi():
         page = self.get_page(link)
         return self.extract_videos(page, search_section=True)
 
-    def get_recent(self, page):
+    def get_paged_videos(self, page, video_type):
         result = []
-        page = self.get_page('/sekce/nejnovejsi?page=%s' % page)
+
+        if video_type == 'recent':
+            page = self.get_page('/sekce/nejnovejsi?page=%s' % page)
+        elif video_type == 'popular':
+            page = self.get_page('/sekce/nejsledovanejsi?page=%s' % page)
+
         videos = self.extract_videos(page, search_section=(page == 0))
 
         for r in videos:
