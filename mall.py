@@ -119,12 +119,17 @@ class MallApi():
         for card in grid.find_all('div', {'class': 'video-card'}):
             link = card.select('.video-card__details a.video-card__details-link')[0]
 
+            duration = card.find('span', {'class': 'badge__wrapper-video-duration'})
+
+            if not duration:
+                continue
+
             result.append({
                 'label': link.text,
                 'thumbnail': card.find('div', {'class': ['video-card__thumbnail', 'lazy']})['data-src'],
                 'path': self.url_for('video', link=link['href']),
                 'info': {
-                    'duration': self.get_duration(card.find('span', {'class': 'badge__wrapper-video-duration'}).text)
+                    'duration': self.get_duration(duration.text)
                 },
                 'is_playable': True,
                 'show_name': card.find('a', {'class': ['video-card__info', 'video-card__info-channel']}).text,
