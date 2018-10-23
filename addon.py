@@ -11,14 +11,17 @@ def category_index():
 
 @plugin.route('/category/<link>')
 def category(link):
+    plugin.set_content('tvshows')
     return api.get_category(link)
 
 @plugin.route('/show')
 def show_index():
+    plugin.set_content('tvshows')
     return api.get_shows()
 
 @plugin.route('/show/<link>')
 def show(link):
+    plugin.set_content('episodes')
     return api.get_show_videos(link)
 
 @plugin.route('/video/<link>')
@@ -31,6 +34,8 @@ def video(link):
 def paged_videos(video_type, page='0'):
     page = int(page)
     items = api.get_paged_videos(page, video_type)
+
+    plugin.set_content('episodes')
 
     items.append({
         'label': plugin.get_string(30011),
