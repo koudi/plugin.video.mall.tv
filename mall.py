@@ -103,7 +103,11 @@ class MallApi():
             result.append({
                 'label': item.find('h4').text,
                 'path': self.url_for('show', link=item.find('a')['href']),
-                'thumbnail': item.find('a', attrs={'data-src': True})['data-src']
+                'thumbnail': item.find('a', attrs={'data-src': True})['data-src'],
+                'info': {
+                    'mediatype': 'tvshow',
+                    'tvshowtitle': item.find('h4').text
+                }
             })
 
         return result
@@ -120,6 +124,7 @@ class MallApi():
             link = card.select('.video-card__details a.video-card__details-link')[0]
 
             duration = card.find('span', {'class': 'badge__wrapper-video-duration'})
+            show_title = card.find('a', {'class': ['video-card__info', 'video-card__info-channel']}).text
 
             if not duration:
                 continue
@@ -129,10 +134,13 @@ class MallApi():
                 'thumbnail': card.find('div', {'class': ['video-card__thumbnail', 'lazy']})['data-src'],
                 'path': self.url_for('video', link=link['href']),
                 'info': {
-                    'duration': self.get_duration(duration.text)
+                    'duration': self.get_duration(duration.text),
+                    'mediatype': 'episode',
+                    'tvshowtitle': show_title,
+                    'title': link.text
                 },
                 'is_playable': True,
-                'show_name': card.find('a', {'class': ['video-card__info', 'video-card__info-channel']}).text,
+                'show_name': show_title,
             })
 
         return result
