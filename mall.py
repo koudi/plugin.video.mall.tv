@@ -77,9 +77,32 @@ class MallApi():
 
         return shows
 
-    def get_show_videos(self, link):
-        page = self.get_page(link)
-        return self.extract_videos(page, search_section=True)
+    def get_show_videos(self, link, season_id):
+        if season_id == '0':
+            page = self.get_page(link)
+            seasons = self.get_seasons(page)
+        else:
+            page = self.get_page('/Serie/Season?seasonId={}&sortType=0&page=0'.format(season_id))
+            seasons = []
+
+        videos = self.extract_videos(page, search_section=True)
+
+        return seasons + videos
+
+    def get_seasons(self, page):
+        result = []
+        items = page.select('.mall_categories-list li')
+
+        for item in items[1:-1]:
+            for li in item.find_all('li'):
+                li.extract()
+
+            result.append({
+                'label': item.text,
+                'path': self.url_for('show', season=item['data-id'])
+            })
+
+        return result
 
     def get_paged_videos(self, page, video_type):
         result = []

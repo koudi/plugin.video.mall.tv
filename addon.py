@@ -19,10 +19,10 @@ def show_index():
     plugin.set_content('tvshows')
     return api.get_shows()
 
-@plugin.route('/show/<link>')
-def show(link):
+@plugin.route('/show/<link>/<season>', options={'season': '0', 'link': '-'})
+def show(link, season):
     plugin.set_content('episodes')
-    return api.get_show_videos(link)
+    return api.get_show_videos(link, season)
 
 @plugin.route('/video/<link>')
 def video(link):
