@@ -115,7 +115,9 @@ class MallApi():
         videos = self.extract_videos(page, search_section=(page == 0))
 
         for r in videos:
+            ctx_url = self.url_for('show', link=r['show_link'])
             r['label'] = '[LIGHT]%s[/LIGHT] | %s' % (r['show_name'], r['label'])
+            r['context_menu'] = [(self.plugin.get_string(30014), 'XBMC.Container.Update({}, false)'.format(ctx_url))]
 
         return videos
 
@@ -147,7 +149,10 @@ class MallApi():
             link = card.select('.video-card__details a.video-card__details-link')[0]
 
             duration = card.find('span', {'class': 'badge__wrapper-video-duration'})
-            show_title = card.find('a', {'class': ['video-card__info', 'video-card__info-channel']}).text
+
+            show = card.find('a', {'class': ['video-card__info', 'video-card__info-channel']})
+            show_title = show.text
+            show_link = show['href']
 
             if not duration:
                 continue
@@ -164,6 +169,7 @@ class MallApi():
                 },
                 'is_playable': True,
                 'show_name': show_title,
+                'show_link': show_link
             })
 
         return result
