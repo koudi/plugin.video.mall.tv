@@ -1,3 +1,5 @@
+2019-02-15 [0.0.8]
+  * Added possibility to choose format (HLS/MP4) - thx bbaronSVK
 2018-10-30 [0.0.7]
   * Added go to button to context menu in new/popular 
   * Added slovak translation
