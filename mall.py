@@ -108,15 +108,15 @@ class MallApi():
         result = []
 
         if video_type == 'recent':
-            page = self.get_page('/sekce/nejnovejsi?page=%s' % page)
+            page = self.get_page('/sekce/nejnovejsi?page={0}'.format(page))
         elif video_type == 'popular':
-            page = self.get_page('/sekce/nejsledovanejsi?page=%s' % page)
+            page = self.get_page('/sekce/nejsledovanejsi?page={0}'.format(page))
 
         videos = self.extract_videos(page, search_section=(page == 0))
 
         for r in videos:
             ctx_url = self.url_for('show', link=r['show_link'])
-            r['label'] = '[LIGHT]%s[/LIGHT] | %s' % (r['show_name'], r['label'])
+            r['label'] = '[LIGHT]{0}[/LIGHT] | {1}'.formats(r['show_name'], r['label'])
             r['context_menu'] = [(self.plugin.get_string(30014), 'XBMC.Container.Update({}, false)'.format(ctx_url))]
 
         return videos
@@ -200,4 +200,5 @@ class MallApi():
         max_quality = int(self.plugin.get_setting('max_quality'))
         selected = filter(lambda x: x <= max_quality, qualities)[0]
 
-        return '%s/%s/index.m3u8' % (main_link.replace('/index.m3u8', ''), selected)
+        url = '{0}/{1}/index{1}.mp4' if self.plugin.get_setting('format') == 'MP4' else '{0}/{1}/index.m3u8';
+        return url.format(main_link.replace('/index.m3u8', ''), selected)
