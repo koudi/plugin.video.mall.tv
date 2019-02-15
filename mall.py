@@ -116,7 +116,7 @@ class MallApi():
 
         for r in videos:
             ctx_url = self.url_for('show', link=r['show_link'])
-            r['label'] = '[LIGHT]{0}[/LIGHT] | {1}'.formats(r['show_name'], r['label'])
+            r['label'] = '[LIGHT]{0}[/LIGHT] | {1}'.format(r['show_name'], r['label'])
             r['context_menu'] = [(self.plugin.get_string(30014), 'XBMC.Container.Update({}, false)'.format(ctx_url))]
 
         return videos
