@@ -18,7 +18,8 @@ class MallApi():
         return self.plugin.url_for(*args, **kwargs)
 
     def get_page(self, url):
-        r = requests.get(self.BASE + url)
+        cookies = dict(__selectedLanguage='cz')
+        r = requests.get(self.BASE + url, cookies=cookies)
         return BeautifulSoup(r.content, 'html.parser')
 
     def get_categories(self, ):
