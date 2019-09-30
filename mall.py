@@ -6,10 +6,12 @@ import re
 
 class MallApi():
 
-    BASE = 'https://www.mall.tv'
-
     def __init__(self, plugin):
         self.plugin = plugin
+        if self.plugin.get_setting('country') == '0':
+            self.BASE = 'https://www.mall.tv'
+        else:
+            self.BASE = 'https://sk.mall.tv'
 
     def warn(self, *args, **kwargs):
         self.plugin.log.warning(*args, **kwargs)
@@ -18,8 +20,7 @@ class MallApi():
         return self.plugin.url_for(*args, **kwargs)
 
     def get_page(self, url):
-        cookies = dict(__selectedLanguage='cz')
-        r = requests.get(self.BASE + url, cookies=cookies)
+        r = requests.get(self.BASE + url, cookies=dict(__selectedLanguage= 'cz' if self.plugin.get_setting('country') == '0' else 'sk'))
         return BeautifulSoup(r.content, 'html.parser')
 
     def get_categories(self, ):
