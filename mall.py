@@ -8,10 +8,8 @@ class MallApi():
 
     def __init__(self, plugin):
         self.plugin = plugin
-        if self.plugin.get_setting('country') == '0':
-            self.BASE = 'https://www.mall.tv'
-        else:
-            self.BASE = 'https://sk.mall.tv'
+        self.is_cz = self.plugin.get_setting('country') == '0'
+        self.BASE = 'https://www.mall.tv' if self.is_cz else 'https://sk.mall.tv' 
 
     def warn(self, *args, **kwargs):
         self.plugin.log.warning(*args, **kwargs)
@@ -20,7 +18,7 @@ class MallApi():
         return self.plugin.url_for(*args, **kwargs)
 
     def get_page(self, url):
-        r = requests.get(self.BASE + url, cookies=dict(__selectedLanguage= 'cz' if self.plugin.get_setting('country') == '0' else 'sk'))
+        r = requests.get(self.BASE + url, cookies=dict(__selectedLanguage= 'cz' if self.is_cz else 'sk'))
         return BeautifulSoup(r.content, 'html.parser')
 
     def get_categories(self, ):
@@ -110,9 +108,9 @@ class MallApi():
         result = []
 
         if video_type == 'recent':
-            page = self.get_page('/sekce/nejnovejsi?page={0}'.format(page))
+            page = self.get_page('/sekce/nejnovejsi' if self.is_cz else '/sekcia/najnovsie' +'?page={0}'.format(page))
         elif video_type == 'popular':
-            page = self.get_page('/sekce/nejsledovanejsi?page={0}'.format(page))
+            page = self.get_page('/sekce'if self.is_cz else '/sekcia' + '/trending?page={0}'.format(page))
 
         videos = self.extract_videos(page, search_section=(page == 0))
 

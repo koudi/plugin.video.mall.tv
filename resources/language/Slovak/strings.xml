@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <strings>
 	<string id="30001">Kategórie</string>
-	<string id="30002">Seriály</string>
+	<string id="30002">Relácie</string>
 	<string id="30003">Video</string>
 	<string id="30004">Max. kvalita</string>
 	<string id="30005">1080</string>
@@ -9,10 +9,10 @@
 	<string id="30007">480</string>
 	<string id="30008">360</string>
 	<string id="30009">240</string>
-	<string id="30010">Najnovšie</string>
+	<string id="30010">Najnovšie videá</string>
 	<string id="30011">Ďalšia strana</string>
 	<string id="30012">Predchádzajúca strana</string>
-	<string id="30013">Nejsledovanejšie</string>
+	<string id="30013">Ostatní práve sledujú</string>
 	<string id="30014">Prejsť k relácii</string>
 	<string id="30015">Video formát</string>
 	<string id="30016">Jazyková verzia</string>
