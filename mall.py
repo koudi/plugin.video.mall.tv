@@ -11,6 +11,22 @@ class MallApi():
         self.is_cz = self.plugin.get_setting('country') == '0'
         self.BASE = 'https://www.mall.tv' if self.is_cz else 'https://sk.mall.tv' 
 
+    def unify_url(self, url):
+        return re.sub(r"//[^\.]+\.", "//zeus.", url)
+
+    def get_img_for(self, img_version, url):
+        if '/mobile/' in url:
+            url=url.replace('/mobile/','/'+img_version+'/')
+        else:
+            url=url.replace('/mobile-a/','/'+img_version+'/')
+        return self.unify_url(url)
+
+    def get_fanart_url(self, url):
+        return self.get_img_for('background', url)
+
+    def get_thumb_url(self, url):
+        return self.get_img_for('desktop', url)
+
     def warn(self, *args, **kwargs):
         self.plugin.log.warning(*args, **kwargs)
 
@@ -35,8 +51,9 @@ class MallApi():
             a = card.find('a')
             result.append({
                 'path': self.url_for('category', link=a['href']),
-                'thumbnail': a['data-src'],
-                'label': card.find('h2').contents[0]
+                'thumbnail': self.get_thumb_url(a['data-src']),
+                'label': card.find('h2').contents[0],
+                'fanart': self.get_fanart_url(a['data-src'])
             })
 
         badges = page.find_all('a', {'class': 'badge-kategory'})
@@ -108,9 +125,9 @@ class MallApi():
         result = []
 
         if video_type == 'recent':
-            page = self.get_page('/sekce/nejnovejsi' if self.is_cz else '/sekcia/najnovsie' +'?page={0}'.format(page))
+            page = self.get_page(('/sekce/nejnovejsi' if self.is_cz else '/sekcia/najnovsie') +'?page={0}'.format(page))
         elif video_type == 'popular':
-            page = self.get_page('/sekce'if self.is_cz else '/sekcia' + '/trending?page={0}'.format(page))
+            page = self.get_page(('/sekce' if self.is_cz else '/sekcia') + '/trending?page={0}'.format(page))
 
         videos = self.extract_videos(page, search_section=(page == 0))
 
@@ -125,10 +142,12 @@ class MallApi():
         result = []
 
         for item in page.select('.video-card__series figure'):
+            img = item.find('a', attrs={'data-src': True})['data-src']
             result.append({
                 'label': item.find('h4').text,
                 'path': self.url_for('show', link=item.find('a')['href']),
-                'thumbnail': item.find('a', attrs={'data-src': True})['data-src'],
+                'thumbnail': self.get_thumb_url(img),
+                'fanart': self.get_fanart_url(img),
                 'info': {
                     'mediatype': 'tvshow',
                     'tvshowtitle': item.find('h4').text
@@ -153,13 +172,14 @@ class MallApi():
             show = card.find('a', {'class': ['video-card__info', 'video-card__info-channel']})
             show_title = show.text
             show_link = show['href']
+            show_fanart = self.get_fanart_url(card.find('div', {'class': ['d-md-none', 'video-card__small-img']})['data-src'])
 
             if not duration:
                 continue
 
             result.append({
                 'label': link.text,
-                'thumbnail': card.find('div', {'class': ['video-card__thumbnail', 'lazy']})['data-src'],
+                'thumbnail': self.get_thumb_url(card.find('div', {'class': ['video-card__thumbnail', 'lazy']})['data-src']),
                 'path': self.url_for('video', link=link['href']),
                 'info': {
                     'duration': self.get_duration(duration.text),
@@ -169,7 +189,8 @@ class MallApi():
                 },
                 'is_playable': True,
                 'show_name': show_title,
-                'show_link': show_link
+                'show_link': show_link,
+                'fanart': show_fanart
             })
 
         return result
