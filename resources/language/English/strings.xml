@@ -9,10 +9,13 @@
 	<string id="30007">480</string>
 	<string id="30008">360</string>
 	<string id="30009">240</string>
-	<string id="30010">Recent</string>
+	<string id="30010">Recent videos</string>
 	<string id="30011">Next page</string>
 	<string id="30012">Previous page</string>
-	<string id="30013">Popular</string>
+	<string id="30013">Trending videos</string>
 	<string id="30014">Go to show</string>
 	<string id="30015">Video format</string>
+	<string id="30016">Language version</string>
+	<string id="30017">Czech</string>
+	<string id="30018">Slovak</string>
 </strings>

@@ -2,4 +2,5 @@
     <setting type="lsep" label="30003" />
     <setting label="30004" id="max_quality" type="labelenum" lvalues="30009|30008|30007|30006|30005" default="1080" />
     <setting label="30015" id="format" type="labelenum" values="HLS|MP4" default="HLS"/>
+    <setting label="30016" id="country" type="enum" lvalues="30017|30018" default="0"/>
 </settings>

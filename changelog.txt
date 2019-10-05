@@ -1,3 +1,11 @@
+2019-10-05 [0.0.9]
+  * Added support for slovak version sk.mall.tv
+  * Added country select setting
+  * Fixed popular category paging
+  * Missing popular category replaced by trending videos
+  * Renamed categories according to website
+  * Added fanart for shows and categories
+  * Get thumbnails in better quality
 2019-02-15 [0.0.8]
   * Added possibility to choose format (HLS/MP4) - thx bbaronSVK
 2018-10-30 [0.0.7]
