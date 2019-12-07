@@ -35,7 +35,7 @@ class MallApi():
 
     def get_page(self, url):
         r = requests.get(self.BASE + url, cookies=dict(__selectedLanguage= 'cz' if self.is_cz else 'sk'), headers={'User-Agent': 'AndroidApp; LGE LG-850; 8.0.0'})
-        return BeautifulSoup(r.content.decode('utf-8', 'ignore'), 'html.parser')
+        return BeautifulSoup(r.content, 'html.parser')
 
     def get_categories(self, ):
         result = []
