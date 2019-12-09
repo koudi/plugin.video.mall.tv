@@ -34,7 +34,7 @@ class MallApi():
         return self.plugin.url_for(*args, **kwargs)
 
     def get_page(self, url):
-        r = requests.get(self.BASE + url, cookies=dict(__selectedLanguage= 'cz' if self.is_cz else 'sk'))
+        r = requests.get(self.BASE + url, cookies=dict(__selectedLanguage= 'cz' if self.is_cz else 'sk'), headers={'User-Agent': 'AndroidApp; LGE LG-850; 8.0.0'})
         return BeautifulSoup(r.content, 'html.parser')
 
     def get_categories(self, ):
@@ -158,7 +158,7 @@ class MallApi():
 
     def extract_videos(self, page, search_section=True):
         result = []
-
+        
         if search_section:
             grid = page.find('section', {'class': ['video-grid', 'isVideo']})
         else:
@@ -176,11 +176,13 @@ class MallApi():
 
             if not duration:
                 continue
+            
+            self.plugin.log.debug(link['href'].encode('utf-8'))
 
             result.append({
                 'label': link.text,
                 'thumbnail': self.get_thumb_url(card.find('div', {'class': ['video-card__thumbnail', 'lazy']})['data-src']),
-                'path': self.url_for('video', link=link['href']),
+                'path': self.url_for('video', link=link['href'].encode('utf-8')),
                 'info': {
                     'duration': self.get_duration(duration.text),
                     'mediatype': 'episode',
