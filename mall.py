@@ -158,6 +158,7 @@ class MallApi():
 
     def extract_videos(self, page, search_section=True):
         result = []
+        
         if search_section:
             grid = page.find('section', {'class': ['video-grid', 'isVideo']})
         else:
@@ -176,7 +177,7 @@ class MallApi():
             if not duration:
                 continue
             
-            print link['href'].encode('utf-8')
+            self.plugin.log.debug(link['href'].encode('utf-8'))
 
             result.append({
                 'label': link.text,
