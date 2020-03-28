@@ -138,6 +138,18 @@ class MallApi():
 
         return videos
 
+    def get_live(self, video_type):
+        result = []
+
+        page = self.get_page(('/zive' if self.is_cz else '/nazivo'))
+
+        videos = self.extract_live(page)
+
+        for r in videos:
+            r['context_menu'] = [(self.plugin.get_string(30014), 'XBMC.Container.Update({}, false)'.format(r['path']))]
+
+        return videos
+
     def extract_shows(self, page):
         result = []
 
@@ -183,8 +195,43 @@ class MallApi():
                 'label': link.text,
                 'thumbnail': self.get_thumb_url(card.find('div', {'class': ['video-card__thumbnail', 'lazy']})['data-src']),
                 'path': self.url_for('video', link=link['href'].encode('utf-8')),
+                'link': link['href'],
                 'info': {
                     'duration': self.get_duration(duration.text),
+                    'mediatype': 'episode',
+                    'tvshowtitle': show_title,
+                    'title': link.text
+                },
+                'is_playable': True,
+                'show_name': show_title,
+                'show_link': show_link,
+                'fanart': show_fanart
+            })
+
+        return result
+
+    def extract_live(self, page):
+        result = []
+
+        grid = page.find('section', {'class': ['video-grid', 'isVideo']})
+
+        for card in grid.find_all('div', {'class': 'video-card'}):
+            link = card.select('.video-card__details a.video-card__details-link')[0]
+
+            show = card.find('a', {'class': ['video-card__info', 'video-card__info-channel']})
+            show_title = show.text
+            show_link = show['href']
+            show_fanart = self.get_fanart_url(card.find('div', {'class': ['d-md-none', 'video-card__small-img']})['data-src'])
+
+            self.plugin.log.debug(link['href'].encode('utf-8'))
+
+            result.append({
+                'label': link.text,
+                'thumbnail': self.get_thumb_url(card.find('div', {'class': ['video-card__thumbnail', 'lazy']})['data-src']),
+                'link': link['href'],
+                'path': self.url_for('stream', link=link['href'].encode('utf-8')),
+                'info': {
+                    'duration': '',
                     'mediatype': 'episode',
                     'tvshowtitle': show_title,
                     'title': link.text
@@ -206,22 +253,31 @@ class MallApi():
 
         return count
 
-    def get_video_url(self, link):
+    def get_video_url(self, link, stream=False):
         page = self.get_page(link)
 
         source = page.find('source')
 
         if not source:
-            main_link = page.find('meta', {'itemprop': 'image'})['content'].replace('standart.jpg', 'index.m3u8')
+            main_link = page.find('meta', {'itemprop': 'image'})['content'].replace('retina.jpg', 'index.m3u8')
         else:
-            main_link = source['src'] + '.m3u8'
+            main_link = source['src']
 
-        index_list = requests.get(main_link).text
-
-        qualities = re.findall(r'(\d+)/index.m3u8', index_list, flags=re.MULTILINE)
-        qualities = reversed(sorted(map(int, qualities)))
         max_quality = int(self.plugin.get_setting('max_quality'))
-        selected = filter(lambda x: x <= max_quality, qualities)[0]
 
-        url = '{0}/{1}/index{1}.mp4' if self.plugin.get_setting('format') == 'MP4' else '{0}/{1}/index.m3u8';
-        return url.format(main_link.replace('/index.m3u8', ''), selected)
+        if stream == False:
+            main_link = main_link + '.m3u8'
+
+            index_list = requests.get(main_link).text
+
+            qualities = re.findall(r'(\d+)/index.m3u8', index_list, flags=re.MULTILINE)
+            qualities = reversed(sorted(map(int, qualities)))
+            selected = filter(lambda x: x <= max_quality, qualities)[0]
+
+            url = '{0}/{1}/index{1}.mp4' if self.plugin.get_setting('format') == 'MP4' else '{0}/{1}/index.m3u8';
+            url = url.format(main_link.replace('/index.m3u8', ''), selected)
+        else:
+            url = '{0}{1}/index.m3u8'
+            url = url.format(main_link, max_quality)
+
+        return url
