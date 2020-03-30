@@ -27,12 +27,14 @@ def show(link, season):
 @plugin.route('/video/<link>')
 def video(link):
     url = api.get_video_url(link)
-    plugin.set_resolved_url(url)
+    if url:
+        plugin.set_resolved_url(url)
 
-@plugin.route('/stream/<link>')
-def stream(link):
+@plugin.route('/livestream/<link>')
+def livestream(link):
     url = api.get_video_url(link, True)
-    plugin.set_resolved_url(url)
+    if url:
+        plugin.set_resolved_url(url)
 
 @plugin.route('/popular/<page>', name='popular', options={'video_type': 'popular'})
 @plugin.route('/recent/<page>', name='recent',  options={'video_type': 'recent'})

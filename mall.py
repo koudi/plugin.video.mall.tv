@@ -229,7 +229,7 @@ class MallApi():
                 'label': link.text,
                 'thumbnail': self.get_thumb_url(card.find('div', {'class': ['video-card__thumbnail', 'lazy']})['data-src']),
                 'link': link['href'],
-                'path': self.url_for('stream', link=link['href'].encode('utf-8')),
+                'path': self.url_for('livestream', link=link['href'].encode('utf-8')),
                 'info': {
                     'duration': '',
                     'mediatype': 'episode',
@@ -253,7 +253,7 @@ class MallApi():
 
         return count
 
-    def get_video_url(self, link, stream=False):
+    def get_video_url(self, link, is_live=False):
         page = self.get_page(link)
 
         source = page.find('source')
@@ -261,23 +261,27 @@ class MallApi():
         if not source:
             main_link = page.find('meta', {'itemprop': 'image'})['content'].replace('retina.jpg', 'index.m3u8')
         else:
-            main_link = source['src']
+            main_link = source['src'] + '.m3u8'
 
+        index_list = requests.get(main_link).text
+
+        qualities = re.findall(r'(\d+)/index.m3u8', index_list, flags=re.MULTILINE)
+        if not len(qualities):
+            self.plugin.notify(self.plugin.get_string(30021).encode("utf-8"), delay=7000, image=self.plugin._addon.getAddonInfo('icon'))
+            return None
+        qualities = reversed(sorted(map(int, qualities)))
         max_quality = int(self.plugin.get_setting('max_quality'))
-
-        if stream == False:
-            main_link = main_link + '.m3u8'
-
-            index_list = requests.get(main_link).text
-
-            qualities = re.findall(r'(\d+)/index.m3u8', index_list, flags=re.MULTILINE)
-            qualities = reversed(sorted(map(int, qualities)))
-            selected = filter(lambda x: x <= max_quality, qualities)[0]
-
+        for q in qualities:
+            selected = q
+            if selected <= max_quality:
+                break
+        self.plugin.log.debug('Selected quality: '+str(selected))
+        if selected > max_quality:
+            self.plugin.notify(self.plugin.get_string(30020).encode("utf-8") % (str(max_quality), str(selected)), delay=7000, image=self.plugin._addon.getAddonInfo('icon'))
+        
+        if is_live == False:
             url = '{0}/{1}/index{1}.mp4' if self.plugin.get_setting('format') == 'MP4' else '{0}/{1}/index.m3u8';
-            url = url.format(main_link.replace('/index.m3u8', ''), selected)
+            return url.format(main_link.replace('/index.m3u8', ''), selected)
         else:
             url = '{0}{1}/index.m3u8'
-            url = url.format(main_link, max_quality)
-
-        return url
+            return url.format(main_link.replace('.m3u8', ''), selected)
