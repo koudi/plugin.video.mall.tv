@@ -1,3 +1,5 @@
+2020-09-10 [0.0.12]
+  * Prepend scheme to URL if not present
 2020-03-30 [0.0.11]
   * Added Live stream support
   * Fixed quality selection

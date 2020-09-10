@@ -3,6 +3,7 @@
 from bs4 import BeautifulSoup
 import requests
 import re
+from urlparse import urlparse, urlunparse
 
 class MallApi():
 
@@ -262,6 +263,8 @@ class MallApi():
             main_link = page.find('meta', {'itemprop': 'image'})['content'].replace('retina.jpg', 'index.m3u8')
         else:
             main_link = source['src'] + '.m3u8'
+        url_parts = urlparse(main_link, 'https')
+        main_link = urlunparse(url_parts)
 
         index_list = requests.get(main_link).text
 
