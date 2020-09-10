@@ -261,7 +261,7 @@ class MallApi():
         if not source:
             main_link = page.find('meta', {'itemprop': 'image'})['content'].replace('retina.jpg', 'index.m3u8')
         else:
-            main_link = source['src'] + '.m3u8'
+            main_link = 'https:'+source['src'] + '.m3u8'
 
         index_list = requests.get(main_link).text
 
