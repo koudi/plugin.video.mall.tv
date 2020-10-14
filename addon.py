@@ -19,8 +19,9 @@ def show_index():
     plugin.set_content('tvshows')
     return api.get_shows()
 
+@plugin.route('/show/<link>', name='show_first_season', options={'season': '0', 'link': '-'})
 @plugin.route('/show/<link>/<season>', options={'season': '0', 'link': '-'})
-def show(link, season):
+def show(link, season='0'):
     plugin.set_content('episodes')
     return api.get_show_videos(link, season)
 
@@ -36,7 +37,9 @@ def livestream(link):
     if url:
         plugin.set_resolved_url(url)
 
+@plugin.route('/popular', name='popular_first_page', options={'video_type': 'popular'})
 @plugin.route('/popular/<page>', name='popular', options={'video_type': 'popular'})
+@plugin.route('/recent', name='recent_first_page',  options={'video_type': 'recent'})
 @plugin.route('/recent/<page>', name='recent',  options={'video_type': 'recent'})
 def paged_videos(video_type, page='0'):
     page = int(page)
