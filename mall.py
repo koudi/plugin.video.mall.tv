@@ -254,15 +254,25 @@ class MallApi():
 
         return count
 
+    def get_video_main_url(self, page):
+        # extracts a video url from a script tag, it's in an internal json structure under VideoSource value
+        script_tag = page.find(lambda tag: tag.name == 'script' and 'VideoSource' in tag.text)
+        # removes everything before the value of VideoSource including the quote character
+        tmp_str = re.sub(r'^.*VideoSource"[\s]*:[\s]*"', '', script_tag.string.encode('utf-8'))
+        # removes everything after the value including the quote character
+        return re.sub(r'["\s]*,["\s]*.*$', '', tmp_str).strip()
+
     def get_video_url(self, link, is_live=False):
         page = self.get_page(link)
 
         source = page.find('source')
 
         if not source:
-            main_link = page.find('meta', {'itemprop': 'image'})['content'].replace('retina.jpg', 'index.m3u8')
+            main_link = self.get_video_main_url(page)
         else:
-            main_link = source['src'] + '.m3u8'
+            main_link = source['src']
+
+        main_link += '.m3u8'
         url_parts = urlparse(main_link, 'https')
         main_link = urlunparse(url_parts)
 
