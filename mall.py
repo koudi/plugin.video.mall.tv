@@ -123,8 +123,6 @@ class MallApi():
         return result
 
     def get_paged_videos(self, page, video_type):
-        result = []
-
         if video_type == 'recent':
             page = self.get_page(('/sekce/nejnovejsi' if self.is_cz else '/sekcia/najnovsie') +'?page={0}'.format(page))
         elif video_type == 'popular':
@@ -139,12 +137,24 @@ class MallApi():
 
         return videos
 
-    def get_live(self, video_type):
-        result = []
+    def get_live_categories(self):
+        page = self.get_page(('/zive' if self.is_cz else '/nazivo'))
+        video_grids = page.find_all('section', {'class': ['video-grid', 'isVideo']})
 
+        result = []
+        for category_id, grid in enumerate(video_grids):
+            live_section_title = grid.find('h2', {'class': ['video-grid__title']}).text
+            result.append({
+                'label': live_section_title,
+                'path': self.url_for('live', category_id=str(category_id))
+            })
+
+        return result
+
+    def get_live_category_videos(self, category):
         page = self.get_page(('/zive' if self.is_cz else '/nazivo'))
 
-        videos = self.extract_live(page)
+        videos = self.extract_live(page, category)
 
         for r in videos:
             r['context_menu'] = [(self.plugin.get_string(30014), 'XBMC.Container.Update({}, false)'.format(r['path']))]
@@ -211,11 +221,16 @@ class MallApi():
 
         return result
 
-    def extract_live(self, page):
+    def extract_live(self, page, category):
         result = []
 
-        grid = page.find('section', {'class': ['video-grid', 'isVideo']})
+        video_grids = page.find_all('section', {'class': ['video-grid', 'isVideo']})
 
+        category_idx = int(category)
+        if category_idx >= len(video_grids):
+            return result
+
+        grid = video_grids[category_idx]
         for card in grid.find_all('div', {'class': 'video-card'}):
             link = card.select('.video-card__details a.video-card__details-link')[0]
 
@@ -262,7 +277,7 @@ class MallApi():
         # removes everything after the value including the quote character
         return re.sub(r'["\s]*,["\s]*.*$', '', tmp_str).strip()
 
-    def get_video_url(self, link, is_live=False):
+    def get_video_url(self, link):
         page = self.get_page(link)
 
         source = page.find('source')
@@ -271,6 +286,10 @@ class MallApi():
             main_link = self.get_video_main_url(page)
         else:
             main_link = source['src']
+
+        if not main_link:
+            self.plugin.notify(self.plugin.get_string(30021).encode("utf-8"), delay=7000, image=self.plugin._addon.getAddonInfo('icon'))
+            return None
 
         main_link += '.m3u8'
         url_parts = urlparse(main_link, 'https')
@@ -291,8 +310,9 @@ class MallApi():
         self.plugin.log.debug('Selected quality: '+str(selected))
         if selected > max_quality:
             self.plugin.notify(self.plugin.get_string(30020).encode("utf-8") % (str(max_quality), str(selected)), delay=7000, image=self.plugin._addon.getAddonInfo('icon'))
-        
-        if is_live == False:
+
+        # current live streams contain 'live' text in their link and have to be treated differently
+        if 'live' not in main_link:
             url = '{0}/{1}/index{1}.mp4' if self.plugin.get_setting('format') == 'MP4' else '{0}/{1}/index.m3u8';
             return url.format(main_link.replace('/index.m3u8', ''), selected)
         else:
