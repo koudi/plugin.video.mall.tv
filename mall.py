@@ -141,8 +141,14 @@ class MallApi():
         page = self.get_page(('/zive' if self.is_cz else '/nazivo'))
         video_grids = page.find_all('section', {'class': ['video-grid', 'isVideo']})
 
-        result = []
-        for category_id, grid in enumerate(video_grids):
+        if not video_grids:
+            return []
+
+        # display current streams directly in the root as first items
+        result = self.get_live_category_videos(0, page)
+
+        # then the rest of the categories
+        for category_id, grid in enumerate(video_grids[1:], 1):
             live_section_title = grid.find('h2', {'class': ['video-grid__title']}).text
             result.append({
                 'label': live_section_title,
@@ -151,8 +157,9 @@ class MallApi():
 
         return result
 
-    def get_live_category_videos(self, category):
-        page = self.get_page(('/zive' if self.is_cz else '/nazivo'))
+    def get_live_category_videos(self, category, page=None):
+        if not page:
+            page = self.get_page(('/zive' if self.is_cz else '/nazivo'))
 
         videos = self.extract_live(page, category)
 
