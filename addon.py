@@ -33,7 +33,7 @@ def video(link):
 
 @plugin.route('/livestream/<link>')
 def livestream(link):
-    url = api.get_video_url(link, True)
+    url = api.get_video_url(link)
     if url:
         plugin.set_resolved_url(url)
 
@@ -54,9 +54,13 @@ def paged_videos(video_type, page='0'):
 
     return items
 
-@plugin.route('/live', name='live',  options={'video_type': 'live'})
-def live(video_type):
-    items = api.get_live(video_type)
+@plugin.route('/live')
+def live_index():
+    return api.get_live_categories()
+
+@plugin.route('/live/<category_id>')
+def live(category_id):
+    items = api.get_live_category_videos(category_id)
 
     plugin.set_content('episodes')
 
@@ -82,7 +86,7 @@ def index():
     }
     live = {
         'label': plugin.get_string(30019),
-        'path': plugin.url_for('live')
+        'path': plugin.url_for(live_index)
     }
     return [show, category, recent, popular, live]
 
