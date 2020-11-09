@@ -1,3 +1,5 @@
+2020-11-09 [0.0.15]
+  * Added sub-categories for live streams
 2020-10-29 [0.0.14]
   * Fixed live video stream playback
 2020-10-14 [0.0.13]

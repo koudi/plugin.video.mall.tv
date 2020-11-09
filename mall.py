@@ -298,13 +298,18 @@ class MallApi():
             self.plugin.notify(self.plugin.get_string(30021).encode("utf-8"), delay=7000, image=self.plugin._addon.getAddonInfo('icon'))
             return None
 
+        # non "index.m3u8" playlists contains video-id together with quality id
+        video_id=''
+        if not main_link.endswith('index'):
+            video_id=main_link.split('/')[-1]
+
         main_link += '.m3u8'
         url_parts = urlparse(main_link, 'https')
         main_link = urlunparse(url_parts)
 
         index_list = requests.get(main_link).text
 
-        qualities = re.findall(r'(\d+)/index.m3u8', index_list, flags=re.MULTILINE)
+        qualities = re.findall(video_id+r'(\d+)/index.m3u8', index_list, flags=re.MULTILINE)
         if not len(qualities):
             self.plugin.notify(self.plugin.get_string(30021).encode("utf-8"), delay=7000, image=self.plugin._addon.getAddonInfo('icon'))
             return None
