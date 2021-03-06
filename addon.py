@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from kodiswift import Plugin
+from xbmcswift2 import Plugin
 from mall import MallApi
 
 plugin = Plugin()

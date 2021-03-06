@@ -1,5 +1,5 @@
 # plugin.video.mall.tv
 
-Video doplnìk do [kodi](http://www.kodi.tv/) pro pøehrávání videí z èeské a slovenské internetové televize [mall.tv](https://www.mall.tv/).
+Video doplnÄ›k do [kodi](http://www.kodi.tv/) pro pÅ™ehrÃ¡vÃ¡nÃ­ videÃ­ z ÄeskÃ© a slovenskÃ© internetovÃ© televize [mall.tv](https://www.mall.tv/).
 
-Informace o instalaci najdete na stránkách repozitáøe [Kodi CZ/SK](http://kodi-czsk.github.io/repository/).
+Informace o instalaci najdete na strÃ¡nkÃ¡ch repozitÃ¡Å™e [Kodi CZ/SK](http://kodi-czsk.github.io/repository/).

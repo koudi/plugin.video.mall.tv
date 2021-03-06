@@ -1,3 +1,5 @@
+2021-03-06 [1.0.0]
+  * Basic python3 and Kodi19 support
 2020-11-09 [0.0.15]
   * Added sub-categories for live streams
 2020-10-29 [0.0.14]

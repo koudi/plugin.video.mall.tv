@@ -1,0 +1,102 @@
+# XBMC Media Center language file
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC-Addons\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: 2021-03-02 23:18+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: sk\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2\n"
+
+msgctxt "#30001"
+msgid "Categories"
+msgstr "Kategórie"
+
+msgctxt "#30002"
+msgid "TV Shows"
+msgstr "Relácie"
+
+msgctxt "#30003"
+msgid "Display"
+msgstr "Video"
+
+msgctxt "#30004"
+msgid "Max. quality"
+msgstr "Max. kvalita"
+
+msgctxt "#30005"
+msgid "1080"
+msgstr "1080"
+
+msgctxt "#30006"
+msgid "720"
+msgstr "720"
+
+msgctxt "#30007"
+msgid "480"
+msgstr "480"
+
+msgctxt "#30008"
+msgid "360"
+msgstr "360"
+
+msgctxt "#30009"
+msgid "240"
+msgstr "240"
+
+msgctxt "#30010"
+msgid "Recent videos"
+msgstr "Najnovšie videá"
+
+msgctxt "#30011"
+msgid "Next page"
+msgstr "Ďalšia strana"
+
+msgctxt "#30012"
+msgid "Previous page"
+msgstr "Predchádzajúca strana"
+
+msgctxt "#30013"
+msgid "Trending videos"
+msgstr "Ostatní práve sledujú"
+
+msgctxt "#30014"
+msgid "Go to show"
+msgstr "Prejsť k relácii"
+
+msgctxt "#30015"
+msgid "Video format"
+msgstr "Video formát"
+
+msgctxt "#30016"
+msgid "Language version"
+msgstr "Jazyková verzia"
+
+msgctxt "#30017"
+msgid "Czech"
+msgstr "Česká"
+
+msgctxt "#30018"
+msgid "Slovak"
+msgstr "Slovenská"
+
+msgctxt "#30019"
+msgid "Live"
+msgstr "Naživo"
+
+msgctxt "#30020"
+msgid "Quality %s not available - playing %s"
+msgstr "Kvalita %s nedostupná - prehráva sa %s"
+
+msgctxt "#30021"
+msgid "Video not (yet) available"
+msgstr "Video (ešte) nie je dostupné"
+
+msgctxt "#30022"
+msgid "144"
+msgstr "144"
