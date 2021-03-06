@@ -285,24 +285,10 @@ class MallApi():
         return count
 
     def get_video_main_url(self, page):
-        with open('page.txt','w') as f:
-            f.write(str(page))
         # extracts a video url from a script tag, it's in an internal json structure under VideoSource value
         script_tag = page.find(lambda tag: tag.name == 'script' and (tag.string and 'VideoSource' in tag.string))
-        
-        #print(page.find_all('script'))
-
-#        for i,tag in enumerate(page.find_all('script')):
-#            print(tag.string)
-#            fname = 'mall-script'+str(i)+'.txt'
-#            with open(fname,'w') as f:
-#                f.write(str(tag.string))
-#            self.plugin.log.debug('writed: '+fname)
-#        return None
-
-        self.plugin.log.debug('script_tag='+str(script_tag))
         # removes everything before the value of VideoSource including the quote character
-        tmp_str = re.sub(r'^.*VideoSource"[\s]*:[\s]*"', '', script_tag.string)#.encode('utf-8'))
+        tmp_str = re.sub(r'^.*VideoSource"[\s]*:[\s]*"', '', script_tag.string)
         # removes everything after the value including the quote character
         return re.sub(r'["\s]*,["\s]*.*$', '', tmp_str).strip()
 
