@@ -12,15 +12,12 @@ class MallApi():
         self.is_cz = self.plugin.get_setting('country') == '0'
         self.BASE = 'https://www.mall.tv' if self.is_cz else 'https://sk.mall.tv' 
 
-    def unify_url(self, url):
-        return re.sub(r"//[^\.]+\.", "//zeus.", url)
-
     def get_img_for(self, img_version, url):
-        if '/mobile/' in url:
-            url=url.replace('/mobile/','/'+img_version+'/')
-        else:
-            url=url.replace('/mobile-a/','/'+img_version+'/')
-        return self.unify_url(url)
+        for pattern in ['/mobile/', '/mobile-a/', '/desktop/']:
+            if pattern in url:
+                url=url.replace(pattern,'/'+img_version+'/')
+                break
+        return url
 
     def get_fanart_url(self, url):
         return self.get_img_for('background', url)
@@ -278,9 +275,9 @@ class MallApi():
 
     def get_video_main_url(self, page):
         # extracts a video url from a script tag, it's in an internal json structure under VideoSource value
-        script_tag = page.find(lambda tag: tag.name == 'script' and 'VideoSource' in tag.text)
+        script_tag = page.find(lambda tag: tag.name == 'script' and (tag.string and 'VideoSource' in tag.string))
         # removes everything before the value of VideoSource including the quote character
-        tmp_str = re.sub(r'^.*VideoSource"[\s]*:[\s]*"', '', script_tag.string.encode('utf-8'))
+        tmp_str = re.sub(r'^.*VideoSource"[\s]*:[\s]*"', '', script_tag.string)
         # removes everything after the value including the quote character
         return re.sub(r'["\s]*,["\s]*.*$', '', tmp_str).strip()
 

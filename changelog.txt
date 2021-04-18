@@ -1,3 +1,6 @@
+2021-04-18 [0.0.16]
+  * Adapted to new version of BeautifulSoap4 4.9.3
+  * Fixed thumbnail and fanart images acquisition
 2020-11-09 [0.0.15]
   * Added sub-categories for live streams
 2020-10-29 [0.0.14]
