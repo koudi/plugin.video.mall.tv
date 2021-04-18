@@ -12,15 +12,12 @@ class MallApi():
         self.is_cz = self.plugin.get_setting('country') == '0'
         self.BASE = 'https://www.mall.tv' if self.is_cz else 'https://sk.mall.tv' 
 
-    def unify_url(self, url):
-        return re.sub(r"//[^\.]+\.", "//zeus.", url)
-
     def get_img_for(self, img_version, url):
-        if '/mobile/' in url:
-            url=url.replace('/mobile/','/'+img_version+'/')
-        else:
-            url=url.replace('/mobile-a/','/'+img_version+'/')
-        return self.unify_url(url)
+        for pattern in ['/mobile/', '/mobile-a/', '/desktop/']:
+            if pattern in url:
+                url=url.replace(pattern,'/'+img_version+'/')
+                break
+        return url
 
     def get_fanart_url(self, url):
         return self.get_img_for('background', url)

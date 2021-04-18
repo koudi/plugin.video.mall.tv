@@ -1,3 +1,5 @@
+2021-04-18 [1.0.1]
+  * Fixed thumbnail and fanart images acquisition
 2021-03-06 [1.0.0]
   * Basic python3 and Kodi19 support
 2020-11-09 [0.0.15]
