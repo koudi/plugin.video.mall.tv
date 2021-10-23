@@ -30,5 +30,8 @@
         Plugin na prehrávanie Mall.TV
     </description>
     <source>https://github.com/koudi/plugin.video.mall.tv</source>
+    <assets>
+        <icon>icon.png</icon>
+    </assets>
   </extension>
 </addon>
