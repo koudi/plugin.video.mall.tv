@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="plugin.video.mall.tv"
        name="Mall.TV"
-       version="1.0.1"
+       version="1.0.2"
        provider-name="koudi">
   <requires>
     <import addon="xbmc.python" version="3.0.0" />
@@ -31,7 +31,8 @@
     </description>
     <source>https://github.com/koudi/plugin.video.mall.tv</source>
     <assets>
-        <icon>icon.png</icon>
+        <icon>resources/icon.png</icon>
+        <fanart>resources/fanart.jpg</fanart>
     </assets>
   </extension>
 </addon>
