@@ -97,7 +97,7 @@ class MallApi():
             page = self.get_page(link)
             seasons = self.get_seasons(page)
         else:
-            page = self.get_page('/Serie/Season?seasonId={}&sortType=0&page=0'.format(season_id))
+            page = self.get_page('/Serie/Season?seasonId={}&sortType=3&page=0'.format(season_id))
             seasons = []
 
         videos = self.extract_videos(page, search_section=True)
